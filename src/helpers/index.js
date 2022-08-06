@@ -6,18 +6,18 @@
 
 // const getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
 
-const saveTokenToLocalStorage = (key, payload) => {
+export const saveTokenToLocalStorage = (key, payload) => {
   // createLocalStorage(key);
   // const localStorageData = getLocalStorage(key);
   // localStorage.setItem(key, JSON.stringify({ ...localStorageData, token: payload }));
   localStorage.setItem(key, payload);
 };
 
+export const getToken = () => {
+  const data = localStorage.getItem('token');
+  return data;
+};
 // 1-favor não apagar os comentários, talvez precise deles mais tarde
-// 2-se for adicionar outros helpers, tire o export default da linha 20 e adicione um export antes de
-// cada função a ser exportada.
-
-export default saveTokenToLocalStorage;
 
 // {
 //   ranking: [
