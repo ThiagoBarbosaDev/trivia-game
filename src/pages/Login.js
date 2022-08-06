@@ -1,10 +1,10 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import '../App.css';
-import PropTypes from 'prop-types';
-import Input from '../components/Input';
-import logo from '../trivia.png';
 import Button from '../components/Button';
+import Input from '../components/Input';
 import { saveTokenToLocalStorage } from '../helpers';
+import logo from '../trivia.png';
 
 class Login extends Component {
   constructor() {
@@ -14,6 +14,11 @@ class Login extends Component {
       email: '',
     };
   }
+
+handleSettingsClick = () => {
+  const { history: { push } } = this.props;
+  push('/settings');
+}
 
   handleLoginClick = async () => {
     const { history: { push } } = this.props;
@@ -53,6 +58,12 @@ class Login extends Component {
             onClick={ () => this.handleLoginClick() }
           >
             Play
+          </Button>
+          <Button
+            dataTestId="btn-settings"
+            onClick={ () => this.handleSettingsClick() }
+          >
+            Settings
           </Button>
         </header>
       </div>
