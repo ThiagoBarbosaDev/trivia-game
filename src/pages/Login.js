@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Input from '../components/Input';
 import logo from '../trivia.png';
 import Button from '../components/Button';
-import saveTokenToLocalStorage from '../helpers';
+import { saveTokenToLocalStorage } from '../helpers';
 
 class Login extends Component {
   constructor() {
