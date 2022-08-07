@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getToken } from '../helpers';
+import Button from '../components/Button';
 
 class Game extends Component {
   constructor() {
     super();
     this.state = {
       questions: [],
+      showAnswerStyles: false,
     };
   }
 
@@ -34,17 +36,33 @@ class Game extends Component {
     if (response === errorCode) { this.handleInvalidToken(); }
   }
 
+  handleAnswerStyles = () => {
+    this.setState({ showAnswerStyles: true });
+  }
+
   renderAnswers = () => {
-    const { questions } = this.state;
+    const { questions, showAnswerStyles } = this.state;
     if (questions[0]) {
       const correctAnswer = (
-        <li data-testid="correct-answer" key="correctkey">
+        <Button
+          dataTestId="correct-answer"
+          key="correctkey"
+          className={ showAnswerStyles ? 'correct-answer' : null }
+          onClick={ () => this.handleAnswerStyles() }
+        >
           { questions[0].correct_answer }
-        </li>
+        </Button>
       );
 
       const incorrectAnswers = questions[0].incorrect_answers.map((answer) => (
-        <li key={ answer } data-testid="wrong-answer">{answer}</li>
+        <Button
+          data-testid="wrong-answer"
+          key={ answer }
+          className={ showAnswerStyles ? 'wrong-answer' : null }
+          onClick={ () => this.handleAnswerStyles() }
+        >
+          { answer }
+        </Button>
       ));
 
       const allAnswers = [...incorrectAnswers, correctAnswer];
@@ -52,7 +70,7 @@ class Game extends Component {
       const breakpoint = 0.5;
       const sortedAnswers = allAnswers.sort(() => Math.random() - breakpoint);
 
-      const element = <ul data-testid="answer-options">{ sortedAnswers }</ul>;
+      const element = <section data-testid="answer-options">{ sortedAnswers }</section>;
       return element;
     }
   }
