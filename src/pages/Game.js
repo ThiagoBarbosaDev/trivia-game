@@ -8,7 +8,8 @@ class Game extends Component {
     super();
     this.state = {
       questions: [],
-      showAnswerStyles: false,
+      isAnswered: false,
+      currentQuestion: 0,
     };
   }
 
@@ -37,33 +38,47 @@ class Game extends Component {
   }
 
   handleAnswerStyles = () => {
-    this.setState({ showAnswerStyles: true });
+    this.setState({ isAnswered: true });
+  }
+
+  handleNextQuestion = () => this
+    .setState((prevState) => ({
+      isAnswered: false,
+      currentQuestion: prevState.currentQuestion + 1,
+    }))
+
+  handleNextButtonClick = () => {
+    const { questions, currentQuestion } = this.state;
+    const nextQuestion = questions[currentQuestion + 1];
+    // nextQuestion ? this.handleNextQuestion() : null;
+    if (nextQuestion) { this.handleNextQuestion(); }
   }
 
   renderAnswers = () => {
-    const { questions, showAnswerStyles } = this.state;
-    if (questions[0]) {
+    const { questions, isAnswered, currentQuestion } = this.state;
+    if (questions[currentQuestion]) {
       const correctAnswer = (
         <Button
           dataTestId="correct-answer"
           key="correctkey"
-          className={ showAnswerStyles ? 'correct-answer' : null }
+          className={ isAnswered ? 'correct-answer' : null }
           onClick={ () => this.handleAnswerStyles() }
         >
-          { questions[0].correct_answer }
+          { questions[currentQuestion].correct_answer }
         </Button>
       );
 
-      const incorrectAnswers = questions[0].incorrect_answers.map((answer) => (
-        <Button
-          data-testid="wrong-answer"
-          key={ answer }
-          className={ showAnswerStyles ? 'wrong-answer' : null }
-          onClick={ () => this.handleAnswerStyles() }
-        >
-          { answer }
-        </Button>
-      ));
+      const incorrectAnswers = questions[currentQuestion].incorrect_answers
+        .map((answer) => (
+          <Button
+            data-testid="wrong-answer"
+            key={ answer }
+            className={ isAnswered ? 'wrong-answer' : null }
+            onClick={ () => this.handleAnswerStyles() }
+          >
+            { answer }
+          </Button>
+        ));
 
       const allAnswers = [...incorrectAnswers, correctAnswer];
 
@@ -76,18 +91,25 @@ class Game extends Component {
   }
 
   render() {
-    const { questions } = this.state;
+    const { questions, isAnswered, currentQuestion } = this.state;
     return (
       <div>
         <section>
           <h2>Category</h2>
           <p data-testid="question-category">
-            { questions[0]?.category }
+            { questions[currentQuestion]?.category }
           </p>
           <h3 data-testid="question-text">
-            { questions[0]?.question }
+            { questions[currentQuestion]?.question }
           </h3>
           { this.renderAnswers() }
+          { isAnswered && (
+            <Button
+              dataTestId="btn-next"
+              onClick={ () => this.handleNextButtonClick() }
+            >
+              Next
+            </Button>) }
         </section>
       </div>
     );
