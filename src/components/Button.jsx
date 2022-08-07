@@ -23,7 +23,7 @@ Button.propTypes = {
   dataTestId: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string,
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
@@ -31,6 +31,7 @@ Button.defaultProps = {
   dataTestId: null,
   children: null,
   className: null,
+  disabled: null,
 };
 
 export default Button;
