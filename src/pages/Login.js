@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import '../App.css';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { saveTokenToLocalStorage } from '../helpers';
+import userLoginAction from '../redux/actions';
 import logo from '../trivia.png';
 
 class Login extends Component {
@@ -15,18 +17,20 @@ class Login extends Component {
     };
   }
 
-handleSettingsClick = () => {
-  const { history: { push } } = this.props;
-  push('/settings');
-}
+  handleSettingsClick = () => {
+    const { history: { push } } = this.props;
+    push('/settings');
+  }
 
   handleLoginClick = async () => {
+    const { dispatchLogin } = this.props;
+    const { email: gravatarEmail, name } = this.state;
     const { history: { push } } = this.props;
     const endpoint = 'https://opentdb.com/api_token.php?command=request';
     const response = await fetch(endpoint);
     const { token } = await response.json();
-    console.log(token);
     saveTokenToLocalStorage('token', token);
+    dispatchLogin({ name, gravatarEmail });
     push('/game');
   };
 
@@ -71,9 +75,13 @@ handleSettingsClick = () => {
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  dispatchLogin: (payload) => dispatch(userLoginAction(payload)),
+});
+
 Login.propTypes = {
   name: PropTypes.string,
   email: PropTypes.string,
 }.isRequired;
 
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);
