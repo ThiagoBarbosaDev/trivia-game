@@ -11,11 +11,19 @@ class Feedback extends Component {
   };
 
   render() {
+    const { acertos } = this.props;
+    const multiplicação = 10;
     return (
       <div>
         <h2 data-testid="feedback-text">
           { this.renderFeedback() }
         </h2>
+        <p data-testid="feedback-total-question">
+          {`Você acertou ${acertos}!`}
+        </p>
+        <p data-testid="feedback-total-score">
+          {`Um total de ${acertos * multiplicação} pontos`}
+        </p>
       </div>
     );
   }
