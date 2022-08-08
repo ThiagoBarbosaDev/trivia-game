@@ -11,6 +11,12 @@ handleHomeClick = () => {
 render() {
   return (
     <div>
+      <h2
+        data-testid="ranking-title"
+      >
+        Ranking
+      </h2>
+
       <Button
         dataTestId="btn-go-home"
         onClick={ () => this.handleHomeClick() }

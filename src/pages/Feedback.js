@@ -17,6 +17,11 @@ class Feedback extends Component {
     push('/');
   }
 
+  handleRankingClick = () => {
+    const { history: { push } } = this.props;
+    push('/ranking');
+  };
+
   render() {
     const { acertos } = this.props;
     const multiplicação = 10;
@@ -37,6 +42,12 @@ class Feedback extends Component {
           onClick={ () => this.handlePlayAgainClick() }
         >
           Play Again
+        </Button>
+        <Button
+          dataTestId="btn-ranking"
+          onClick={ () => this.handleRankingClick() }
+        >
+          Ranking
         </Button>
       </div>
     );
