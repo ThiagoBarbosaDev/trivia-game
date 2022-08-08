@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getToken } from '../helpers';
+import React, { Component } from 'react';
 import Button from '../components/Button';
+import Header from '../components/Header';
+import { getToken } from '../helpers';
 
 const second = 1000;
 const timeout = 30000;
@@ -126,6 +127,7 @@ class Game extends Component {
     if (isLoading) { return <div> loading... </div>; }
     return (
       <div>
+        <Header />
         <section>
           <div>{ timer }</div>
           <h2>Category</h2>
