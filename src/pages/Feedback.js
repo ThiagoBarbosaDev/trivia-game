@@ -6,7 +6,6 @@ import Header from '../components/Header';
 class Feedback extends Component {
   renderFeedback = () => {
     const { acertos } = this.props;
-    console.log(acertos);
     const feedback = acertos > 2 ? 'Well Done!' : 'Could be better...';
     return feedback;
   };
