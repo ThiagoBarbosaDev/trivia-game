@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getToken } from '../helpers';
+import React, { Component } from 'react';
 import Button from '../components/Button';
+import Header from '../components/Header';
+import { getToken } from '../helpers';
 
 class Game extends Component {
   constructor() {
@@ -94,6 +95,7 @@ class Game extends Component {
     const { questions, isAnswered, currentQuestion } = this.state;
     return (
       <div>
+        <Header />
         <section>
           <h2>Category</h2>
           <p data-testid="question-category">
