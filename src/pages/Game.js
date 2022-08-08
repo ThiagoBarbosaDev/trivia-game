@@ -53,7 +53,9 @@ class Game extends Component {
     const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}`;
     const response = await fetch(endpoint);
     const data = await response.json();
+
     this.handleTokenValidation(data);
+
     this.setState(() => ({ questionData: data.results }),
       () => this.setSortedAnswers());
   };
@@ -77,6 +79,7 @@ class Game extends Component {
   onCorrectAnswerClick = () => {
     const { score: globalScore, onAnswer } = this.props;
     const { timer, questionData, currentQuestion } = this.state;
+
     const difficultyTier = questionData[currentQuestion].difficulty;
     const baseScore = 10;
     const difficultyScore = {
@@ -84,6 +87,7 @@ class Game extends Component {
       medium: 2,
       hard: 3,
     };
+
     const score = globalScore + baseScore + (timer * difficultyScore[difficultyTier]);
 
     onAnswer(score);
