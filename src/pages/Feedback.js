@@ -12,10 +12,15 @@ class Feedback extends Component {
     return feedback;
   };
 
+  handlePlayAgainClick = () => {
+    const { history: { push } } = this.props;
+    push('/');
+  }
+
   handleRankingClick = () => {
     const { history: { push } } = this.props;
     push('/ranking');
-  }
+  };
 
   render() {
     const { acertos } = this.props;
@@ -33,6 +38,12 @@ class Feedback extends Component {
           {`Um total de ${acertos * multiplicação} pontos`}
         </p>
         <Button
+          dataTestId="btn-play-again"
+          onClick={ () => this.handlePlayAgainClick() }
+        >
+          Play Again
+        </Button>
+        <Button
           dataTestId="btn-ranking"
           onClick={ () => this.handleRankingClick() }
         >
@@ -49,9 +60,7 @@ const mapStateToProps = ({ playerReducer: { assertions } }) => ({
 
 Feedback.propTypes = {
   acertos: PropTypes.number.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
 };
 
 export default connect(mapStateToProps, null)(Feedback);
