@@ -7,6 +7,7 @@ class Header extends Component {
   render() {
     const { userName, score, gravatarEmail } = this.props;
     const gravatarHash = md5(gravatarEmail).toString();
+    console.log(score);
     return (
       <div>
         <header>
@@ -25,7 +26,7 @@ class Header extends Component {
           <span
             data-testid="header-score"
           >
-            { score }
+            { `Score: ${score}` }
           </span>
         </header>
       </div>

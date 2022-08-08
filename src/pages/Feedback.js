@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Header from '../components/Header';
 
 class Feedback extends Component {
   renderFeedback = () => {
@@ -15,6 +16,7 @@ class Feedback extends Component {
     const multiplicação = 10;
     return (
       <div>
+        <Header />
         <h2 data-testid="feedback-text">
           { this.renderFeedback() }
         </h2>
