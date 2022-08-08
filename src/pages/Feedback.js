@@ -43,7 +43,7 @@ class Feedback extends Component {
   }
 }
 
-const mapStateToProps = ({ playerReducer: { assertions } }) => ({
+const mapStateToProps = ({ player: { assertions } }) => ({
   acertos: assertions,
 });
 
