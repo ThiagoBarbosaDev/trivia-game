@@ -96,11 +96,12 @@ class Game extends Component {
 
   renderAnswers = () => {
     const { questionData, isAnswered, currentQuestion, answers } = this.state;
-    const correctAnswer = questionData[currentQuestion].correct_answer;
-    console.log(questionData[currentQuestion]);
+
     const answerButtons = answers.map((answerButton) => {
+      const correctAnswer = questionData[currentQuestion].correct_answer;
       const isAnswerCorrect = correctAnswer === answerButton;
       const className = isAnswerCorrect ? 'correct-answer' : 'wrong-answer';
+
       return (
         <Button
           dataTestId={ isAnswerCorrect ? 'correct-answer' : 'wrong-answer' }
@@ -114,36 +115,6 @@ class Game extends Component {
       );
     });
 
-    // const correctAnswer = (
-    //   <Button
-    //     dataTestId="correct-answer"
-    //     key="correctkey"
-    //     className={ isAnswered ? 'correct-answer' : null }
-    //     onClick={ () => this.handleAnswerStyles() }
-    //     disabled={ isAnswered }
-    //   >
-    //     { questionData[currentQuestion].correct_answer }
-    //   </Button>
-    // );
-
-    // const incorrectAnswers = questionData[currentQuestion].incorrect_answers
-    //   .map((answer) => (
-    //     <Button
-    //       data-testid="wrong-answer"
-    //       key={ answer }
-    //       className={ isAnswered ? 'wrong-answer' : null }
-    //       onClick={ () => this.handleAnswerStyles() }
-    //       disabled={ isAnswered }
-    //     >
-    //       { answer }
-    //     </Button>
-    //   ));
-
-    // const allAnswers = [...incorrectAnswers, correctAnswer];
-
-    // const breakpoint = 0.5;
-    // const sortedAnswers = allAnswers.sort(() => Math.random() - breakpoint);
-
     const sectionElement = (
       <section data-testid="answer-options">{ answerButtons }</section>
     );
@@ -153,7 +124,6 @@ class Game extends Component {
   render() {
     const { questionData, isAnswered, currentQuestion, timer, isLoading } = this.state;
     if (isLoading) { return <div> loading... </div>; }
-    // console.log(this.state.answers);
     return (
       <div>
         <section>
@@ -166,7 +136,6 @@ class Game extends Component {
             { questionData[currentQuestion].question }
           </h3>
           { this.renderAnswers() }
-          {/* { this.state.answers } */}
           { isAnswered && (
             <Button
               dataTestId="btn-next"
