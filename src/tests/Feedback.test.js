@@ -47,6 +47,13 @@ describe('Testa a página de Feedback.', () => {
     const playAgainButton = screen.getByTestId('btn-play-again');
     expect(playAgainButton).toBeInTheDocument();
   })
+  test('Verifica se ao clicar no botão play again o ususário é redirecionado para a página de login', () => {
+    const { history } = renderWithRouterAndRedux(<App />);
+    history.push('/feedback');
+    const rankingButton = screen.getByTestId('btn-play-again');
+    userEvent.click(rankingButton);
+    expect(history.location.pathname).toBe('/');
+  })
   test('Verifica se o botão ranking é renderizado', () => {
     const { history } = renderWithRouterAndRedux(<App />);
     history.push('/feedback');

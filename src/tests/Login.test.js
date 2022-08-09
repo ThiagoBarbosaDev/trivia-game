@@ -1,7 +1,7 @@
 import React from "react";
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
-import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
+import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 import Login from "../pages/Login";
 import App from "../App";
 
@@ -31,14 +31,18 @@ describe('Testa a página de Login.', () => {
     const { history } = renderWithRouterAndRedux(<App />);
     const nameInput = screen.getByTestId('input-player-name');
     const emailInput = screen.getByTestId('input-gravatar-email');
-    const playButton = screen.getAllByRole("button", { name: 'Play' })[0];
+    const playButton = screen.getByTestId('btn-play');
 
     userEvent.type(nameInput, 'Jose');
     userEvent.type(emailInput, 'jose@email.com')
-    userEvent.click(playButton);
+    expect(playButton).toBeEnabled();
 
-    await screen.findByText(/category/i)
+    userEvent.click(playButton);
+    await new Promise((r) => setTimeout(r, 2000));
+    /* const awaitReturn =  await screen.findByText(/category/i);
+    expect(awaitReturn).toBeInTheDocument(); */
     const { pathname } = history.location;
+    console.log(history);
     expect(pathname).toBe('/game');
   })
   test('Verifica se existe o botão Settings na tela', () => {
