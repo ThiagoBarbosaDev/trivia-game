@@ -17,13 +17,6 @@ class Login extends Component {
     };
   }
 
- /*  async componentDidMount() {
-    const endpoint = 'https://opentdb.com/api_token.php?command=request';
-    const response = await fetch(endpoint);
-    const { token } = await response.json();
-    saveTokenToLocalStorage('token', token);
-  } */
-
   handleSettingsClick = () => {
     const { history: { push } } = this.props;
     push('/settings');
