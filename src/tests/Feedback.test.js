@@ -1,9 +1,8 @@
-import React from "react";
 import { screen } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
-import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
-import Feedback from "../pages/Feedback";
+import React from "react";
 import App from "../App";
+import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 
 describe('Testa a página de Feedback.', () => {
   test('Verifica se é renderizada uma imagem do usuário', () => {
