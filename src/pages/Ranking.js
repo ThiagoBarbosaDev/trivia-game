@@ -3,22 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '../components/Button';
-import Header from '../components/Header';
 import { updateRanking } from '../helpers/index';
-
-// para implementar
-// conectar ao estado global
-// recuperar as informações do jogador
-// enviar ao localStorage
-// O localStorage deve conter as chaves ranking e token com a seguinte estrutura:
-// {
-//   ranking: [
-//     { name: nome_da_pessoa, score: 10, picture: url_da_foto_no_gravatar }
-//   ],
-//   token: token_recebido_pela_API
-// }
-// recuperar do localStorage o Ranking
-// fazer um map que retorna uma lista de <li> com os dados do ranking em ordem decrescente de score da maior para a menor.
 
 class Ranking extends Component {
   constructor(props) {
@@ -49,15 +34,30 @@ handleStorage = () => {
 
 renderRanking = () => {
   const { ranking } = this.state;
-  const sortedRanking = ranking.sort((a, b) => a.name - b.name);
-  console.log(sortedRanking);
+  const sortedRanking = ranking.sort((a, b) => b.score - a.score);
+  const rankingElements = sortedRanking.map((item, index) => (
+    <li
+      key={ `${item.name}${index}` }
+    >
+      <img src={ item.picture } alt="gravatar logo" />
+      <div
+        data-testid={ `player-name-${index}` }
+      >
+        {item.name}
+      </div>
+      <div
+        data-testid={ `player-score-${index}` }
+      >
+        {item.score}
+      </div>
+    </li>
+  ));
+  return <ul>{rankingElements}</ul>;
 }
 
 render() {
-  this.renderRanking();
   return (
     <div>
-      <Header />
       <main>
         <h2 data-testid="ranking-title">
           Ranking
@@ -68,6 +68,7 @@ render() {
         >
           Home
         </Button>
+        {this.renderRanking()}
       </main>
     </div>
   );
@@ -75,9 +76,9 @@ render() {
 }
 
 const mapStateToProps = (state) => ({
-  userName: state.playerReducer.name,
-  score: state.playerReducer.score,
-  gravatarEmail: state.playerReducer.gravatarEmail,
+  userName: state.player.name,
+  score: state.player.score,
+  gravatarEmail: state.player.gravatarEmail,
 });
 
 Ranking.propTypes = {
