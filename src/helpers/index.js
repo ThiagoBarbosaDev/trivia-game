@@ -1,10 +1,21 @@
-// const createLocalStorage = (key) => {
-//   if (!JSON.parse(localStorage.getItem(key))) {
-//     localStorage.setItem(key, JSON.stringify({}));
-//   }
-// };
+const createLocalStorage = (key) => {
+  if (!JSON.parse(localStorage.getItem(key))) {
+    localStorage.setItem(key, JSON.stringify([]));
+  }
+};
 
-// const getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
+const getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
+
+const setLocalStorage = (key, payload) => localStorage.setItem(key, JSON
+  .stringify(payload));
+
+export const updateRanking = (payload) => {
+  createLocalStorage('ranking');
+  const rankingData = getLocalStorage('ranking');
+  const updatedRanking = [...rankingData, payload];
+  setLocalStorage('ranking', updatedRanking);
+  return updatedRanking;
+};
 
 export const saveTokenToLocalStorage = (key, payload) => {
   // createLocalStorage(key);
