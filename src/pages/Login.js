@@ -5,7 +5,7 @@ import '../App.css';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { saveTokenToLocalStorage } from '../helpers';
-import userLoginAction from '../redux/actions';
+import { userLoginAction } from '../redux/actions';
 import logo from '../trivia.png';
 
 class Login extends Component {

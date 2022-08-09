@@ -1,8 +1,11 @@
-import { USER_LOGIN } from './actiontypes';
+import { ON_ANSWER, USER_LOGIN } from './actiontypes';
 
-const userLoginAction = (payload) => ({
+export const userLoginAction = (payload) => ({
   type: USER_LOGIN,
   payload,
 });
 
-export default userLoginAction;
+export const onAnswerAction = (payload) => ({
+  type: ON_ANSWER,
+  payload,
+});

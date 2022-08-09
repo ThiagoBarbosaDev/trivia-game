@@ -6,8 +6,8 @@ import Header from '../components/Header';
 
 class Feedback extends Component {
   renderFeedback = () => {
-    const { acertos } = this.props;
-    const feedback = acertos > 2 ? 'Well Done!' : 'Could be better...';
+    const { assertions } = this.props;
+    const feedback = assertions > 2 ? 'Well Done!' : 'Could be better...';
     return feedback;
   };
 
@@ -22,19 +22,23 @@ class Feedback extends Component {
   };
 
   render() {
-    const { acertos } = this.props;
-    const multiplicação = 10;
+    const { assertions, score } = this.props;
+    console.log(this.props, score);
     return (
       <div>
         <Header />
         <h2 data-testid="feedback-text">
           { this.renderFeedback() }
         </h2>
-        <p data-testid="feedback-total-question">
-          {`Você acertou ${acertos}!`}
+        <p>
+          {'Você acertou '}
+          <span data-testid="feedback-total-question">{assertions}</span>
+          {' perguntas.'}
         </p>
-        <p data-testid="feedback-total-score">
-          {`Um total de ${acertos * multiplicação} pontos`}
+        <p>
+          {'Um total de '}
+          <span data-testid="feedback-total-score">{score}</span>
+          {' pontos'}
         </p>
         <Button
           dataTestId="btn-play-again"
@@ -53,12 +57,14 @@ class Feedback extends Component {
   }
 }
 
-const mapStateToProps = ({ playerReducer: { assertions } }) => ({
-  acertos: assertions,
+const mapStateToProps = ({ player: { assertions, score } }) => ({
+  assertions,
+  score,
 });
 
 Feedback.propTypes = {
-  acertos: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
+  assertions: PropTypes.number.isRequired,
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
 };
 
