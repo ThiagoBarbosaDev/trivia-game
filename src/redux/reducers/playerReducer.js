@@ -10,7 +10,7 @@ const INITIAL_STATE = {
 const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case USER_LOGIN:
-    return { ...state, ...action.payload };
+    return { ...INITIAL_STATE, ...action.payload };
   case ON_ANSWER:
     return { ...state, assertions: state.assertions + 1, score: action.payload };
   default:

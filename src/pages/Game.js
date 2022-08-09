@@ -17,7 +17,7 @@ class Game extends Component {
       isAnswered: false,
       isLoading: true,
       currentQuestion: 0,
-      timer: 0,
+      timer: 30,
     };
 
     this.timer = null;
@@ -118,10 +118,10 @@ class Game extends Component {
   }
 
   setTimer = () => {
-    this.setState({ timer: 0 });
+    this.setState({ timer: 30 });
 
     this.timer = setInterval(() => {
-      this.setState((prevState) => ({ timer: prevState.timer + 1 }));
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
     }, second);
 
     this.timeout = setTimeout(() => {
