@@ -67,4 +67,17 @@ describe('Testa a página de Feedback.', () => {
     userEvent.click(rankingButton);
     expect(history.location.pathname).toBe('/ranking');
   })
+  test('aqui', () => {
+    const initialState = {
+      player: {
+      name:"Jorge Casé",
+      assertions: 5,
+      score: 0,
+      gravatarEmail: "jorgekzbra@gmail.com",
+      }  
+    }
+    renderWithRouterAndRedux(<App />, initialState, '/feedback');
+    const wellDone = screen.getByRole('heading', { name: /well done!/i});
+    expect(wellDone).toBeInTheDocument();
+  })
 })
