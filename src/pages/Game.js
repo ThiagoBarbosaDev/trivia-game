@@ -34,8 +34,8 @@ class Game extends Component {
   }
 
   clearTimers = () => {
-    if (this.timer) { clearInterval(this.timer); }
-    if (this.timeout) { clearTimeout(this.timeout); }
+    clearInterval(this.timer); 
+    clearTimeout(this.timeout); 
   }
 
   setSortedAnswers = () => {
@@ -162,7 +162,7 @@ class Game extends Component {
 
   render() {
     const { questionData, isAnswered, currentQuestion, timer, isLoading } = this.state;
-    if (isLoading) { return <div> loading... </div>; }
+    if (isLoading) { return <div>loading...</div>; }
     return (
       <div>
         <Header />

@@ -1,5 +1,5 @@
 import React from "react";
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import App from "../App";
@@ -125,17 +125,69 @@ describe('Testa a página de Game', () => {
     expect(question).toHaveTextContent(questionsResponse.results[1].question);
 
   })
+  test('Verifica se a página feedback é renderizada após responder 5 perguntas', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: jest.fn().mockResolvedValue(questionsResponse),
+    });
+    jest.spyOn(global, 'clearInterval')
+    jest.spyOn(global, 'clearTimeout')
+    const { history } = renderWithRouterAndRedux(<App />, initialState, '/game');
+    await new Promise((r) => setTimeout(r, 2000));
+
+    const correctAnswer1 = screen.getByTestId('correct-answer')
+    userEvent.click(correctAnswer1);
+    const nextButton1 = await screen.findByRole('button', { name: /next/i });
+    userEvent.click(nextButton1)
+
+    const correctAnswer2 = await screen.findByTestId('correct-answer')
+    userEvent.click(correctAnswer2);
+    const nextButton2 = await screen.findByRole('button', { name: /next/i });
+    userEvent.click(nextButton2)
+
+    const correctAnswer3 = await screen.findByTestId('correct-answer')
+    userEvent.click(correctAnswer3);
+    const nextButton3 = await screen.findByRole('button', { name: /next/i });
+    userEvent.click(nextButton3)
+
+    const correctAnswer4 = await screen.findByTestId('correct-answer')
+    userEvent.click(correctAnswer4);
+    const nextButton4 = await screen.findByRole('button', { name: /next/i });
+    userEvent.click(nextButton4)
+
+    const correctAnswer5 = await screen.findByTestId('correct-answer')
+    userEvent.click(correctAnswer5);
+    const nextButton5 = await screen.findByRole('button', { name: /next/i });
+    userEvent.click(nextButton5)
+
+    expect(clearInterval).toHaveBeenCalled()
+    expect(clearTimeout).toHaveBeenCalled()
+    screen.logTestingPlaygroundURL()
+
+    expect(history.location.pathname).toBe('/feedback')
+  })
   test('Verifica se o botão Next é renderizado após 30 segundos', async () => {
     jest.useFakeTimers();
     jest.spyOn(global, 'fetch').mockResolvedValue({
       json: jest.fn().mockResolvedValue(questionsResponse),
     });
-    renderWithRouterAndRedux(<App />, initialState, '/game');
-    await waitFor(() => expect(fetch).toHaveBeenCalled());
-    await waitFor
-    const time = screen.getByText(/25/i);
-    expect(time).toBeInTheDocument();
-    /* const nextButton = screen.getByTestId('btn-next');
-    expect(nextButton).toBeInTheDocument(); */
+    jest.spyOn(global, 'clearInterval')
+    jest.spyOn(global, 'clearTimeout')
+    const { history } = renderWithRouterAndRedux(<App />, initialState, '/game');
+    // await new Promise((r) => setTimeout(r, 2000));
+    
+    await waitForElementToBeRemoved(() => screen.getByText('loading...'))
+
+    screen.logTestingPlaygroundURL()
+    jest.advanceTimersByTime(32000);
+    
+    expect(screen.queryAllByText('Next')).toHaveLength(1);
+
+    // setTimeout(() => {
+    //   const nextButton = screen.getByRole('button', { name: /next/i });
+    //   expect(nextButton).toBeInTheDocument()}, 31000)
+    // expect(nextButton).toBeInTheDocument();
+
+    // expect(clearInterval).toHaveBeenCalled()
+
   })
 })
