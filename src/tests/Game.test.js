@@ -123,5 +123,19 @@ describe('Testa a página de Game', () => {
     const question = screen.getByTestId('question-text');
     expect(question).toBeInTheDocument();
     expect(question).toHaveTextContent(questionsResponse.results[1].question);
+
+  })
+  test('Verifica se o botão Next é renderizado após 30 segundos', async () => {
+    jest.useFakeTimers();
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: jest.fn().mockResolvedValue(questionsResponse),
+    });
+    renderWithRouterAndRedux(<App />, initialState, '/game');
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    await waitFor
+    const time = screen.getByText(/25/i);
+    expect(time).toBeInTheDocument();
+    /* const nextButton = screen.getByTestId('btn-next');
+    expect(nextButton).toBeInTheDocument(); */
   })
 })
