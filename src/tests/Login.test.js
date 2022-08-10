@@ -39,10 +39,7 @@ describe('Testa a página de Login.', () => {
 
     userEvent.click(playButton);
     await new Promise((r) => setTimeout(r, 2000));
-    /* const awaitReturn =  await screen.findByText(/category/i);
-    expect(awaitReturn).toBeInTheDocument(); */
     const { pathname } = history.location;
-    console.log(history);
     expect(pathname).toBe('/game');
   })
   test('Verifica se existe o botão Settings na tela', () => {
