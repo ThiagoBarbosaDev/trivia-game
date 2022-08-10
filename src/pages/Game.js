@@ -34,8 +34,8 @@ class Game extends Component {
   }
 
   clearTimers = () => {
-    clearInterval(this.timer); 
-    clearTimeout(this.timeout); 
+    clearInterval(this.timer);
+    clearTimeout(this.timeout);
   }
 
   setSortedAnswers = () => {
