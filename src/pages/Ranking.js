@@ -30,7 +30,7 @@ handleStorage = () => {
   this.setState({
     ranking: rankingData,
   });
-}
+};
 
 renderRanking = () => {
   const { ranking } = this.state;

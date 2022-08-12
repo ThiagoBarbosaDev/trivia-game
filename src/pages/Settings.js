@@ -41,7 +41,9 @@ class Settings extends Component {
       dispatchCategory(categoryId);
     };
     if (name === 'selectedDifficulty') { dispatchDifficulty(value.toLowerCase()) };
-    if (name === 'selectedType') { value === 'True / False' ? dispatchType('boolean') : dispatchType('multiple') };
+    if (name === 'selectedType') { value === 'True / False'
+      ? dispatchType('boolean')
+      : dispatchType('multiple') }
   }
 
   handleInput = ({ target: { value, name } }) => {
@@ -53,26 +55,26 @@ class Settings extends Component {
     const { isLoading, categories, selectedCategory, selectedType,
       selectedDifficulty } = this.state;
     const categoryOptions = ['Any Category', ...categories
-      .map((category) => category.name)]
-    if (isLoading) {return <div>Loading...</div>}
+      .map((category) => category.name)];
+    if (isLoading) { return <div>Loading...</div> };
     return (
       <div>
         <header data-testid="settings-title">
           <h2>Settings</h2>
           <ComboBox
-            data={ categoryOptions } 
+            data={ categoryOptions }
             value={ selectedCategory }
             name="selectedCategory"
             onChange={ (event) => this.handleInput(event) }
           />
           <ComboBox
-            data={ DIFFICULTY_OPTIONS } 
+            data={ DIFFICULTY_OPTIONS }
             value={ selectedDifficulty }
             name="selectedDifficulty"
             onChange={ (event) => this.handleInput(event) }
           />
-          <ComboBox 
-            data={ TYPE_OPTIONS } 
+          <ComboBox
+            data={ TYPE_OPTIONS }
             value={ selectedType }
             name="selectedType"
             onChange={ (event) => this.handleInput(event) }

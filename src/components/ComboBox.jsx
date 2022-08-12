@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 class ComboBox extends React.Component {
   render() {
-    const { value, onChange, data, name, dataTestId, className, ...otherProps } = this.props;
+    const { value, onChange, data, name, dataTestId,
+      className, ...otherProps } = this.props;
     return (
       <select
         className={ className }
@@ -25,6 +26,13 @@ ComboBox.propTypes = {
   onChange: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.string).isRequired,
   name: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  dataTestId: PropTypes.string,
+};
+
+ComboBox.defaultProps = {
+  className: null,
+  dataTestId: null,
 };
 
 export default ComboBox;

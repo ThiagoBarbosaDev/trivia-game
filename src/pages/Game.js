@@ -9,13 +9,12 @@ import { onAnswerAction } from '../redux/actions';
 const second = 1000;
 const timeout = 30000;
 
-const unescapeHtml = (text) => {
-  return text.replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#039;/g, "'");
-}
+const unescapeHtml = (text) => text
+  .replace(/&amp;/g, '&')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .replace(/&#039;/g, '\'');
 
 class Game extends Component {
   constructor() {
@@ -57,14 +56,14 @@ class Game extends Component {
     this.setState({ answers: sortedAnswers, isLoading: false });
   }
 
-  handleBooleanQuestion = () => {  
+  handleBooleanQuestion = () => {
     const { questionData, currentQuestion } = this.state;
     console.log('entrei');
-    const correctAnswer = questionData[currentQuestion].correct_answer
-    const incorrectAnswer = questionData[currentQuestion].incorrect_answers[0]
-    const booleanOptions = correctAnswer === 'True' 
+    const correctAnswer = questionData[currentQuestion].correct_answer;
+    const incorrectAnswer = questionData[currentQuestion].incorrect_answers[0];
+    const booleanOptions = correctAnswer === 'True'
     ? [correctAnswer, incorrectAnswer]
-    : [incorrectAnswer, correctAnswer]
+    : [incorrectAnswer, correctAnswer];
     this.setState({ answers: booleanOptions, isLoading: false });
   }
 
