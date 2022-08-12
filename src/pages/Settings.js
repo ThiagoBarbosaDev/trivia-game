@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import ComboBox from '../components/ComboBox';
 import { changeCategoryAction, changeDifficultyAction,
   changeTypeAction, 
-  playAgainAction} from '../redux/actions';
+  playAgainAction,
+  userLogoutAction} from '../redux/actions';
 import Button from '../components/Button';
 import { Redirect } from 'react-router-dom';
+import { capitalizeFirstLetter } from '../helpers';
 
 const DIFFICULTY_OPTIONS = ['Any Difficulty', 'Easy', 'Medium', 'Hard'];
 const TYPE_OPTIONS = ['Any Type', 'Multiple Choice', 'True / False'];
 
+const typeStoreOptions = {
+  multiple: 'Multiple Choice',
+  boolean: 'True / False',
+}
+
+// const difficultyStoreOptions = {
+//   easy: 'Easy',
+//   med
+// }
 class Settings extends Component {
   constructor() {
     super();
@@ -26,14 +36,33 @@ class Settings extends Component {
 
   componentDidMount() {
     const { isLoggedIn } = this.props;
-    if (isLoggedIn) { this.fetchCategories(); }
+    if (isLoggedIn) { 
+      this.fetchCategories(); 
+    }
+  }
+
+  importSettings() {
+    const { category: categoryId, type, difficulty } = this.props;
+    const { categories } = this.state;
+    
+    const nonDefaultOption = categoryId !== 'any' || type !== 'any' || difficulty !== 'any';
+
+    if (nonDefaultOption) {
+      const categoryString = categories.find((item) => item.id ? item.id === categoryId : false ).name
+      this.setState({
+        selectedCategory: categoryString,
+        selectedType: typeStoreOptions[type],
+        selectedDifficulty: capitalizeFirstLetter(difficulty),
+      })
+    }
   }
 
   fetchCategories = async () => {
     const endpoint = 'https://opentdb.com/api_category.php';
     const response = await fetch(endpoint);
     const categories = await response.json();
-    this.setState({ categories: categories.trivia_categories, isLoading: false });
+    this.setState(() => ({ categories: categories.trivia_categories, isLoading: false }),
+    () => this.importSettings());
   }
 
   handleDispatch = (name, value) => {
@@ -46,10 +75,16 @@ class Settings extends Component {
       : dispatchType('multiple')
     );
 
-    switch (name) {
-    case 'selectedCategory':
+    const handleDispatchCategory = () => {
       const categoryId = categories.find((category) => category.name === value).id;
       dispatchCategory(categoryId);
+    }
+
+    switch (name) {
+    case 'selectedCategory':
+      value !== 'Any Category'
+      ? handleDispatchCategory()
+      : dispatchCategory('any')
       break;
     case 'selectedDifficulty':
       dispatchDifficulty(value.toLowerCase());
@@ -71,6 +106,11 @@ class Settings extends Component {
     const { history: { push }, dispatchPlayAgain } = this.props;
     dispatchPlayAgain();
     push('/game');
+  }
+
+  handleLogout = () => {
+    const { dispatchLogout } = this.props;
+    dispatchLogout();
   }
 
   render() {
@@ -107,7 +147,7 @@ class Settings extends Component {
             name="selectedType"
             onChange={ (event) => this.handleInput(event) }
           />
-          <Link to="/"> Logout </Link>
+          <Button onClick={ () => this.handleLogout() }> Logout </Button>
           <Button onClick={ () => this.handlePlay() } > Play </Button>
         </header>
       </div>
@@ -120,10 +160,19 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchDifficulty: (payload) => dispatch(changeDifficultyAction(payload)),
   dispatchType: (payload) => dispatch(changeTypeAction(payload)),
   dispatchPlayAgain: () => dispatch(playAgainAction()),
+  dispatchLogout: () => dispatch(userLogoutAction())
 });
 
-const mapStateToProps = ({ player: { isLoggedIn } }) => ({
+const mapStateToProps = (
+    { 
+      player: { isLoggedIn },
+      settingsReducer: { category, type, difficulty },
+    }
+  ) => ({
   isLoggedIn,
+  category,
+  type,
+  difficulty,
 });
 
 Settings.propTypes = {
@@ -131,6 +180,7 @@ Settings.propTypes = {
   dispatchDifficulty: PropTypes.func.isRequired,
   dispatchType: PropTypes.func.isRequired,
   dispatchPlayAgain: PropTypes.func.isRequired,
+  dispatchLogout: PropTypes.func.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
 };
 

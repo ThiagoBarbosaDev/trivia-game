@@ -1,4 +1,5 @@
 export const USER_LOGIN = 'USER_LOGIN';
+export const USER_LOGOUT = 'USER_LOGOUT';
 export const ON_ANSWER = 'ON_ANSWER';
 export const PLAY_AGAIN = 'PLAY_AGAIN';
 

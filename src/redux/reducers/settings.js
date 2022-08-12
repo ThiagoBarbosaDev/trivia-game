@@ -1,4 +1,4 @@
-import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE } from '../actions/actiontypes';
+import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE, USER_LOGOUT } from '../actions/actiontypes';
 
 const INITIAL_STATE = {
   type: 'any',
@@ -14,6 +14,8 @@ const settingsReducer = (state = INITIAL_STATE, action) => {
     return { ...state, difficulty: action.payload };
   case CHANGE_TYPE:
     return { ...state, type: action.payload };
+  case USER_LOGOUT:
+    return { ...INITIAL_STATE };
   default:
     return state;
   }

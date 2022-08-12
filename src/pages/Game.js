@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import { getToken } from '../helpers';
-import { onAnswerAction } from '../redux/actions';
+import { onAnswerAction, userLogoutAction } from '../redux/actions';
 
 const second = 1000;
 const timeout = 30000;
@@ -80,22 +80,27 @@ class Game extends Component {
     const endpoint = this.handleEndpoint(token);
     const response = await fetch(endpoint);
     const data = await response.json();
-
+    this.handleNotEnoughResults(data);
     this.handleTokenValidation(data);
 
     this.setState(() => ({ questionData: data.results }),
       () => this.setSortedAnswers());
   }
-
+  
   handleTokenValidation = ({ response_code: response }) => {
-    const errorCode = 3;
-    if (response === errorCode) { this.handleInvalidToken(); }
+    const tokenNotFound = 3;
+    if (response === tokenNotFound) { this.handleInvalidToken(); }
+  }
+  
+  handleNotEnoughResults = ({ response_code: response }) => {
+    const noResults = 4;
+    if (response === noResults) { this.handleInvalidToken() }
   }
 
   handleInvalidToken = () => {
-    const { history: { push } } = this.props;
+    const { dispatchLogout } = this.props;
     localStorage.removeItem('token');
-    push('/');
+    dispatchLogout();
   }
 
   // data structure handling functions
@@ -210,10 +215,6 @@ class Game extends Component {
     nextClick();
   }
 
-  handleAuthentication = () => {
-
-  }
-
   render() {
     const { questionData, isAnswered, currentQuestion, timer,
       isLoading } = this.state;
@@ -266,6 +267,7 @@ const mapStateToProps = (
 
 const mapDispatchToProps = (dispatch) => ({
   onAnswer: (payload) => dispatch(onAnswerAction(payload)),
+  dispatchLogout: () => dispatch(userLogoutAction()),
 });
 
 Game.propTypes = {
@@ -279,6 +281,7 @@ Game.propTypes = {
   type: PropTypes.string.isRequired,
   difficulty: PropTypes.string.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
+  dispatchLogout: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

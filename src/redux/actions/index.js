@@ -1,10 +1,15 @@
 import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE, ON_ANSWER,
   PLAY_AGAIN,
-  USER_LOGIN } from './actiontypes';
+  USER_LOGIN, 
+  USER_LOGOUT} from './actiontypes';
 
 export const userLoginAction = (payload) => ({
   type: USER_LOGIN,
   payload,
+});
+
+export const userLogoutAction = () => ({
+  type: USER_LOGOUT,
 });
 
 export const onAnswerAction = (payload) => ({

@@ -1,4 +1,4 @@
-import { ON_ANSWER, PLAY_AGAIN, USER_LOGIN } from '../actions/actiontypes';
+import { ON_ANSWER, PLAY_AGAIN, USER_LOGIN, USER_LOGOUT } from '../actions/actiontypes';
 
 const INITIAL_STATE = {
   name: '',
@@ -16,6 +16,8 @@ const player = (state = INITIAL_STATE, action) => {
     return { ...state, assertions: state.assertions + 1, score: action.payload };
   case PLAY_AGAIN:
     return { ...state, assertions: 0, score: 0 };
+  case USER_LOGOUT:
+    return { ...INITIAL_STATE };
   default:
     return state;
   }
