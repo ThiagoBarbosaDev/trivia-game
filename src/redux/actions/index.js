@@ -1,4 +1,5 @@
-import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE, ON_ANSWER, USER_LOGIN } from './actiontypes';
+import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE, ON_ANSWER,
+  USER_LOGIN } from './actiontypes';
 
 export const userLoginAction = (payload) => ({
   type: USER_LOGIN,

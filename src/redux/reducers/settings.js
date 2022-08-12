@@ -9,15 +9,14 @@ const INITIAL_STATE = {
 const settingsReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case CHANGE_CATEGORY:
-    return {...state, category: action.payload};
+    return { ...state, category: action.payload };
   case CHANGE_DIFFICULTY:
-    return {...state, difficulty: action.payload};
+    return { ...state, difficulty: action.payload };
   case CHANGE_TYPE:
-    return {...state, type: action.payload};
+    return { ...state, type: action.payload };
   default:
     return state;
   }
 };
 
 export default settingsReducer;
-
