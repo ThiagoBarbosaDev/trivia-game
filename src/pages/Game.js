@@ -47,7 +47,7 @@ class Game extends Component {
     clearTimeout(this.timeout);
   }
 
-  setSortedAnswers = () => {
+  handleMultipleQuestion = () => {
     const { questionData, currentQuestion } = this.state;
     const correctAnswer = questionData[currentQuestion].correct_answer;
     const incorrectAnswers = questionData[currentQuestion].incorrect_answers;
@@ -55,6 +55,25 @@ class Game extends Component {
     const breakpoint = 0.5;
     const sortedAnswers = allAnswers.sort(() => Math.random() - breakpoint);
     this.setState({ answers: sortedAnswers, isLoading: false });
+  }
+
+  handleBooleanQuestion = () => {  
+    const { questionData, currentQuestion } = this.state;
+    console.log('entrei');
+    const correctAnswer = questionData[currentQuestion].correct_answer
+    const incorrectAnswer = questionData[currentQuestion].incorrect_answers[0]
+    const booleanOptions = correctAnswer === 'True' 
+    ? [correctAnswer, incorrectAnswer]
+    : [incorrectAnswer, correctAnswer]
+    this.setState({ answers: booleanOptions, isLoading: false });
+  }
+
+  setSortedAnswers = () => {
+    const { questionData, currentQuestion } = this.state;
+
+    questionData[currentQuestion].type === 'multiple' 
+      ? this.handleMultipleQuestion() 
+      : this.handleBooleanQuestion();
   }
 
   handleEndpoint = (token) => {

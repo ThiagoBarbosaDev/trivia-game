@@ -41,13 +41,13 @@ class Feedback extends Component {
         </p>
         <Link
           to="/game"
-          dataTestId="btn-play-again"
+          data-testid="btn-play-again"
         > 
           Play Again
         </Link>
         <Link
           to="/ranking"
-          dataTestId="btn-ranking"
+          data-testid="btn-ranking"
         > 
           Ranking
         </Link>
