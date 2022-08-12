@@ -210,11 +210,10 @@ class Game extends Component {
     const { questionData, isAnswered, currentQuestion, timer,
       isLoading } = this.state;
 
-      
     if (isLoading) { return <div>loading...</div>; }
     const { question } = questionData[currentQuestion];
     const parsedQuestion = unescapeHtml(question);
-      
+
     return (
       <div>
         <Header />
@@ -242,10 +241,10 @@ class Game extends Component {
 }
 
 const mapStateToProps = (
-  { 
+  {
     player: { score },
-    settingsReducer: { category, type, difficulty }
-  }
+    settingsReducer: { category, type, difficulty },
+  },
 ) => ({
   score,
   category,
@@ -263,7 +262,7 @@ Game.propTypes = {
   onAnswer: PropTypes.func.isRequired,
   category: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  difficulty: PropTypes.string.isRequired
+  difficulty: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

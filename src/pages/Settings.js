@@ -39,8 +39,7 @@ class Settings extends Component {
     const handleDispatchType = () => value === 'True / False'
       ? dispatchType('boolean')
       : dispatchType('multiple');
-      
-      
+
     switch (name) {
     case 'selectedCategory':
       const categoryId = categories.find((category) => category.name === value).id;
