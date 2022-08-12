@@ -40,7 +40,7 @@ class Game extends Component {
   componentWillUnmount() {
     this.clearTimers();
   }
-  
+
   // timer functions
   clearTimers = () => {
     clearInterval(this.timer);
@@ -58,7 +58,7 @@ class Game extends Component {
       clearInterval(this.timer); this.setState({ isAnswered: true });
     }, timeout);
   }
-  
+
   // fetch related functions
   handleEndpoint = (token) => {
     const { category, difficulty, type } = this.props;
@@ -70,7 +70,7 @@ class Game extends Component {
     const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}${categoryEndpoint}${difficultyEndpoint}${typeEndpoint}`;
     return endpoint;
   }
-  
+
   fetchQuestions = async () => {
     const token = getToken();
     const endpoint = this.handleEndpoint(token);
@@ -87,13 +87,13 @@ class Game extends Component {
     const errorCode = 3;
     if (response === errorCode) { this.handleInvalidToken(); }
   }
-  
+
   handleInvalidToken = () => {
     const { history: { push } } = this.props;
     localStorage.removeItem('token');
     push('/');
   }
-  
+
   // data structure handling functions
   handleMultipleQuestion = () => {
     const { questionData, currentQuestion } = this.state;
@@ -123,7 +123,6 @@ class Game extends Component {
 
   setSortedAnswers = () => {
     const { questionData, currentQuestion } = this.state;
-
     questionData[currentQuestion].type === 'multiple'
       ? this.handleMultipleQuestion()
       : this.handleBooleanQuestion();
@@ -208,10 +207,14 @@ class Game extends Component {
   }
 
   render() {
-    const { questionData, isAnswered, currentQuestion, timer, isLoading } = this.state;
+    const { questionData, isAnswered, currentQuestion, timer,
+      isLoading } = this.state;
+
+      
     if (isLoading) { return <div>loading...</div>; }
     const { question } = questionData[currentQuestion];
     const parsedQuestion = unescapeHtml(question);
+      
     return (
       <div>
         <Header />
@@ -238,7 +241,12 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ({ player: { score }, settingsReducer: { category, type, difficulty } }) => ({
+const mapStateToProps = (
+  { 
+    player: { score },
+    settingsReducer: { category, type, difficulty }
+  }
+) => ({
   score,
   category,
   type,
@@ -253,6 +261,9 @@ Game.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   score: PropTypes.number.isRequired,
   onAnswer: PropTypes.func.isRequired,
+  category: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  difficulty: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

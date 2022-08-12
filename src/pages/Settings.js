@@ -35,24 +35,26 @@ class Settings extends Component {
   handleDispatch = (name, value) => {
     const { dispatchCategory, dispatchDifficulty, dispatchType } = this.props;
     const { categories } = this.state;
+
     const handleDispatchType = () => value === 'True / False'
       ? dispatchType('boolean')
       : dispatchType('multiple');
-
+      
+      
     switch (name) {
-      case 'selectedCategory':
-        const categoryId = categories.find((category) => category.name === value).id;
-        dispatchCategory(categoryId);
-        break;
-      case 'selectedDifficulty':
-        dispatchDifficulty(value.toLowerCase());
-        break;
-      case 'selectedType':
-        handleDispatchType();
-        break;   
-      default:
-        break;
-    };
+    case 'selectedCategory':
+      const categoryId = categories.find((category) => category.name === value).id;
+      dispatchCategory(categoryId);
+      break;
+    case 'selectedDifficulty':
+      dispatchDifficulty(value.toLowerCase());
+      break;
+    case 'selectedType':
+      handleDispatchType();
+      break;
+    default:
+      break;
+    }
   }
 
   handleInput = ({ target: { value, name } }) => {
