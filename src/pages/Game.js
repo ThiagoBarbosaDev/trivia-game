@@ -1,13 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import { getToken } from '../helpers';
-import { onAnswerAction } from '../redux/actions';
+import { onAnswerAction, userLogoutAction } from '../redux/actions';
 
 const second = 1000;
 const timeout = 30000;
+
+const unescapeHtml = (text) => text
+  .replace(/&amp;/g, '&')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .replace(/&#039;/g, '\'');
+
 class Game extends Component {
   constructor() {
     super();
@@ -25,50 +34,139 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    this.fetchQuestions();
-    this.setTimer();
+    const { isLoggedIn } = this.props;
+    if (isLoggedIn) {
+      this.fetchQuestions();
+      this.setTimer();
+    }
   }
 
   componentWillUnmount() {
     this.clearTimers();
   }
 
+  // timer functions
   clearTimers = () => {
     clearInterval(this.timer);
     clearTimeout(this.timeout);
   }
 
-  setSortedAnswers = () => {
-    const { questionData, currentQuestion } = this.state;
-    const correctAnswer = questionData[currentQuestion].correct_answer;
-    const incorrectAnswers = questionData[currentQuestion].incorrect_answers;
-    const allAnswers = [correctAnswer, ...incorrectAnswers];
-    const breakpoint = 0.5;
-    const sortedAnswers = allAnswers.sort(() => Math.random() - breakpoint);
-    this.setState({ answers: sortedAnswers, isLoading: false });
+  setTimer = () => {
+    this.setState({ timer: 30 });
+
+    this.timer = setInterval(() => {
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    }, second);
+
+    this.timeout = setTimeout(() => {
+      clearInterval(this.timer); this.setState({ isAnswered: true });
+    }, timeout);
+  }
+
+  // fetch related functions
+  handleEndpoint = (token) => {
+    const { category, difficulty, type } = this.props;
+
+    const categoryEndpoint = category === 'any' ? '' : `&category=${category}`;
+    const difficultyEndpoint = difficulty === 'any' ? '' : `&difficulty=${difficulty}`;
+    const typeEndpoint = type === 'any' ? '' : `&type=${type}`;
+
+    const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}${categoryEndpoint}${difficultyEndpoint}${typeEndpoint}`;
+    return endpoint;
   }
 
   fetchQuestions = async () => {
     const token = getToken();
-    const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}`;
+    const endpoint = this.handleEndpoint(token);
     const response = await fetch(endpoint);
     const data = await response.json();
-
+    this.handleNotEnoughResults(data);
     this.handleTokenValidation(data);
 
     this.setState(() => ({ questionData: data.results }),
       () => this.setSortedAnswers());
-  };
+  }
+  
+  handleTokenValidation = ({ response_code: response }) => {
+    const tokenNotFound = 3;
+    if (response === tokenNotFound) { this.handleInvalidToken(); }
+  }
+  
+  handleNotEnoughResults = ({ response_code: response }) => {
+    const noResults = 4;
+    if (response === noResults) { this.handleInvalidToken() }
+  }
 
   handleInvalidToken = () => {
-    const { history: { push } } = this.props;
+    const { dispatchLogout } = this.props;
     localStorage.removeItem('token');
-    push('/');
-  };
+    dispatchLogout();
+  }
 
-  handleTokenValidation = ({ response_code: response }) => {
-    const errorCode = 3;
-    if (response === errorCode) { this.handleInvalidToken(); }
+  // data structure handling functions
+  handleMultipleQuestion = () => {
+    const { questionData, currentQuestion } = this.state;
+
+    const correctAnswer = questionData[currentQuestion].correct_answer;
+    const incorrectAnswers = questionData[currentQuestion].incorrect_answers;
+    const allAnswers = [correctAnswer, ...incorrectAnswers];
+
+    const breakpoint = 0.5;
+    const sortedAnswers = allAnswers.sort(() => Math.random() - breakpoint);
+
+    this.setState({ answers: sortedAnswers, isLoading: false });
+  }
+
+  handleBooleanQuestion = () => {
+    const { questionData, currentQuestion } = this.state;
+
+    const correctAnswer = questionData[currentQuestion].correct_answer;
+    const incorrectAnswer = questionData[currentQuestion].incorrect_answers[0];
+
+    const booleanOptions = correctAnswer === 'True'
+      ? [correctAnswer, incorrectAnswer]
+      : [incorrectAnswer, correctAnswer];
+
+    this.setState({ answers: booleanOptions, isLoading: false });
+  }
+
+  setSortedAnswers = () => {
+    const { questionData, currentQuestion } = this.state;
+    questionData[currentQuestion].type === 'multiple'
+      ? this.handleMultipleQuestion()
+      : this.handleBooleanQuestion();
+  }
+
+  // render related functions
+  renderAnswers = () => {
+    const { questionData, isAnswered, currentQuestion, answers } = this.state;
+
+    const answerButtons = answers.map((answerButton) => {
+      const correctAnswer = questionData[currentQuestion].correct_answer;
+      const isAnswerCorrect = correctAnswer === answerButton;
+      const className = isAnswerCorrect ? 'correct-answer' : 'wrong-answer';
+
+      return (
+        <Button
+          dataTestId={ isAnswerCorrect ? 'correct-answer' : 'wrong-answer' }
+          key={ isAnswerCorrect ? 'correctkey' : answerButton }
+          className={ isAnswered ? className : null }
+          onClick={ () => (
+            isAnswerCorrect
+              ? this.onCorrectAnswerClick()
+              : this.onWrongAnswerClick()
+          ) }
+          disabled={ isAnswered }
+        >
+          { answerButton }
+        </Button>
+      );
+    });
+
+    const sectionElement = (
+      <section data-testid="answer-options">{ answerButtons }</section>
+    );
+    return sectionElement;
   }
 
   onWrongAnswerClick = () => {
@@ -117,64 +215,29 @@ class Game extends Component {
     nextClick();
   }
 
-  setTimer = () => {
-    this.setState({ timer: 30 });
-
-    this.timer = setInterval(() => {
-      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
-    }, second);
-
-    this.timeout = setTimeout(() => {
-      clearInterval(this.timer); this.setState({ isAnswered: true });
-    }, timeout);
-  }
-
-  renderAnswers = () => {
-    const { questionData, isAnswered, currentQuestion, answers } = this.state;
-
-    const answerButtons = answers.map((answerButton) => {
-      const correctAnswer = questionData[currentQuestion].correct_answer;
-      const isAnswerCorrect = correctAnswer === answerButton;
-      const className = isAnswerCorrect ? 'correct-answer' : 'wrong-answer';
-
-      return (
-        <Button
-          dataTestId={ isAnswerCorrect ? 'correct-answer' : 'wrong-answer' }
-          key={ isAnswerCorrect ? 'correctkey' : answerButton }
-          className={ isAnswered ? className : null }
-          onClick={ () => (
-            isAnswerCorrect
-              ? this.onCorrectAnswerClick()
-              : this.onWrongAnswerClick()
-          ) }
-          disabled={ isAnswered }
-        >
-          { answerButton }
-        </Button>
-      );
-    });
-
-    const sectionElement = (
-      <section data-testid="answer-options">{ answerButtons }</section>
-    );
-    return sectionElement;
-  }
-
   render() {
-    const { questionData, isAnswered, currentQuestion, timer, isLoading } = this.state;
+    const { questionData, isAnswered, currentQuestion, timer,
+      isLoading } = this.state;
+    const { isLoggedIn } = this.props;
+
+    if (!isLoggedIn) { return <Redirect to='/'/>}
+
     if (isLoading) { return <div>loading...</div>; }
+    const { question, category } = questionData[currentQuestion];
+    const parsedQuestion = unescapeHtml(question);
+
     return (
-      <div>
+      <main>
         <Header />
         <section>
           <div>{ timer }</div>
           <h2>Category</h2>
-          <p data-testid="question-category">
-            { questionData[currentQuestion].category }
-          </p>
-          <h3 data-testid="question-text">
-            { questionData[currentQuestion].question }
+          <h3 data-testid="question-category">
+            { category }
           </h3>
+          <h2 data-testid="question-text">
+            { parsedQuestion }
+          </h2>
           { this.renderAnswers() }
           { isAnswered && (
             <Button
@@ -184,23 +247,41 @@ class Game extends Component {
               Next
             </Button>) }
         </section>
-      </div>
+      </main>
     );
   }
 }
 
-const mapStateToProps = ({ player: { score } }) => ({
+const mapStateToProps = (
+  {
+    player: { score, isLoggedIn },
+    settingsReducer: { category, type, difficulty },
+  },
+) => ({
   score,
+  category,
+  type,
+  difficulty,
+  isLoggedIn,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onAnswer: (payload) => dispatch(onAnswerAction(payload)),
+  dispatchLogout: () => dispatch(userLogoutAction()),
 });
 
 Game.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   score: PropTypes.number.isRequired,
   onAnswer: PropTypes.func.isRequired,
+  category: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  type: PropTypes.string.isRequired,
+  difficulty: PropTypes.string.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  dispatchLogout: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

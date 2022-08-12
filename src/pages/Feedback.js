@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Button from '../components/Button';
+import { Link, Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 
 class Feedback extends Component {
@@ -22,7 +22,9 @@ class Feedback extends Component {
   };
 
   render() {
-    const { assertions, score } = this.props;
+    const { assertions, score, isLoggedIn } = this.props;
+
+    if (!isLoggedIn) { return <Redirect to='/'/>}
     return (
       <div>
         <Header />
@@ -39,32 +41,28 @@ class Feedback extends Component {
           <span data-testid="feedback-total-score">{score}</span>
           {' pontos'}
         </p>
-        <Button
-          dataTestId="btn-play-again"
-          onClick={ () => this.handlePlayAgainClick() }
-        >
-          Play Again
-        </Button>
-        <Button
-          dataTestId="btn-ranking"
-          onClick={ () => this.handleRankingClick() }
+        <Link
+          to="/ranking"
+          data-testid="btn-ranking"
         >
           Ranking
-        </Button>
+        </Link>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ player: { assertions, score } }) => ({
+const mapStateToProps = ({ player: { assertions, score, isLoggedIn } }) => ({
   assertions,
   score,
+  isLoggedIn,
 });
 
 Feedback.propTypes = {
   score: PropTypes.number.isRequired,
   assertions: PropTypes.number.isRequired,
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, null)(Feedback);

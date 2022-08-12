@@ -1,28 +1,26 @@
-import { ON_ANSWER, USER_LOGIN } from '../actions/actiontypes';
+import { ON_ANSWER, PLAY_AGAIN, USER_LOGIN, USER_LOGOUT } from '../actions/actiontypes';
 
 const INITIAL_STATE = {
   name: '',
   assertions: 0,
   score: 0,
   gravatarEmail: '',
+  isLoggedIn: false,
 };
 
 const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case USER_LOGIN:
-    return { ...INITIAL_STATE, ...action.payload };
+    return { ...INITIAL_STATE, ...action.payload, isLoggedIn: true };
   case ON_ANSWER:
     return { ...state, assertions: state.assertions + 1, score: action.payload };
+  case PLAY_AGAIN:
+    return { ...state, assertions: 0, score: 0 };
+  case USER_LOGOUT:
+    return { ...INITIAL_STATE };
   default:
     return state;
   }
 };
 
 export default player;
-
-// {
-//   name: nome-da-pessoa,
-//   assertions: número-de-acertos,
-//   score: pontuação,
-//   gravatarEmail: email-da-pessoa,
-// }
