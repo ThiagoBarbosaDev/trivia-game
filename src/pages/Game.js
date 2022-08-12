@@ -211,21 +211,21 @@ class Game extends Component {
       isLoading } = this.state;
 
     if (isLoading) { return <div>loading...</div>; }
-    const { question } = questionData[currentQuestion];
+    const { question, category } = questionData[currentQuestion];
     const parsedQuestion = unescapeHtml(question);
 
     return (
-      <div>
+      <main>
         <Header />
         <section>
           <div>{ timer }</div>
           <h2>Category</h2>
-          <p data-testid="question-category">
-            { questionData[currentQuestion].category }
-          </p>
-          <h3 data-testid="question-text">
-            { parsedQuestion }
+          <h3 data-testid="question-category">
+            { category }
           </h3>
+          <h2 data-testid="question-text">
+            { parsedQuestion }
+          </h2>
           { this.renderAnswers() }
           { isAnswered && (
             <Button
@@ -235,7 +235,7 @@ class Game extends Component {
               Next
             </Button>) }
         </section>
-      </div>
+      </main>
     );
   }
 }

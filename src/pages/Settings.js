@@ -36,9 +36,11 @@ class Settings extends Component {
     const { dispatchCategory, dispatchDifficulty, dispatchType } = this.props;
     const { categories } = this.state;
 
-    const handleDispatchType = () => value === 'True / False'
+    const handleDispatchType = () => (
+      value === 'True / False'
       ? dispatchType('boolean')
-      : dispatchType('multiple');
+      : dispatchType('multiple')
+    );
 
     switch (name) {
     case 'selectedCategory':
