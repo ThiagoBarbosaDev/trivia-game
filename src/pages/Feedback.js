@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Button from '../components/Button';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 
 class Feedback extends Component {
@@ -39,18 +39,23 @@ class Feedback extends Component {
           <span data-testid="feedback-total-score">{score}</span>
           {' pontos'}
         </p>
-        <Button
+        <Link
+          to="/game"
           dataTestId="btn-play-again"
-          onClick={ () => this.handlePlayAgainClick() }
-        >
+        > 
           Play Again
-        </Button>
-        <Button
+        </Link>
+        <Link
+          to="/ranking"
           dataTestId="btn-ranking"
-          onClick={ () => this.handleRankingClick() }
-        >
+        > 
           Ranking
-        </Button>
+        </Link>
+        <Link
+          to="/settings"
+        > 
+          Settings
+        </Link>
       </div>
     );
   }

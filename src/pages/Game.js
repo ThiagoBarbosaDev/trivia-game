@@ -8,6 +8,15 @@ import { onAnswerAction } from '../redux/actions';
 
 const second = 1000;
 const timeout = 30000;
+
+const unescapeHtml = (text) => {
+  return text.replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#039;/g, "'");
+}
+
 class Game extends Component {
   constructor() {
     super();
@@ -48,9 +57,18 @@ class Game extends Component {
     this.setState({ answers: sortedAnswers, isLoading: false });
   }
 
+  handleEndpoint = (token) => {
+    const { category, difficulty, type } = this.props;
+    const categoryEndpoint = category === 'any' ? '' : `&category=${category}` 
+    const difficultyEndpoint = difficulty === 'any' ? '' : `&difficulty=${difficulty}` 
+    const typeEndpoint = type === 'any' ? '' : `&type=${type}` 
+    const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}${categoryEndpoint}${difficultyEndpoint}${typeEndpoint}`;
+    return endpoint;
+  }
+
   fetchQuestions = async () => {
     const token = getToken();
-    const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}`;
+    const endpoint = this.handleEndpoint(token);
     const response = await fetch(endpoint);
     const data = await response.json();
 
@@ -159,10 +177,12 @@ class Game extends Component {
     );
     return sectionElement;
   }
-
+  
   render() {
     const { questionData, isAnswered, currentQuestion, timer, isLoading } = this.state;
     if (isLoading) { return <div>loading...</div>; }
+    const question = questionData[currentQuestion].question
+    const parsedQuestion = unescapeHtml(question);
     return (
       <div>
         <Header />
@@ -173,7 +193,7 @@ class Game extends Component {
             { questionData[currentQuestion].category }
           </p>
           <h3 data-testid="question-text">
-            { questionData[currentQuestion].question }
+            { parsedQuestion }
           </h3>
           { this.renderAnswers() }
           { isAnswered && (
@@ -189,8 +209,11 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ({ player: { score } }) => ({
+const mapStateToProps = ( { player: { score }, settingsReducer: { category, type, difficulty } } ) => ({
   score,
+  category,
+  type,
+  difficulty,
 });
 
 const mapDispatchToProps = (dispatch) => ({
