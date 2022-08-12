@@ -40,30 +40,84 @@ class Game extends Component {
   componentWillUnmount() {
     this.clearTimers();
   }
-
+  
+  // timer functions
   clearTimers = () => {
     clearInterval(this.timer);
     clearTimeout(this.timeout);
   }
 
+  setTimer = () => {
+    this.setState({ timer: 30 });
+
+    this.timer = setInterval(() => {
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    }, second);
+
+    this.timeout = setTimeout(() => {
+      clearInterval(this.timer); this.setState({ isAnswered: true });
+    }, timeout);
+  }
+  
+  // fetch related functions
+  handleEndpoint = (token) => {
+    const { category, difficulty, type } = this.props;
+
+    const categoryEndpoint = category === 'any' ? '' : `&category=${category}`;
+    const difficultyEndpoint = difficulty === 'any' ? '' : `&difficulty=${difficulty}`;
+    const typeEndpoint = type === 'any' ? '' : `&type=${type}`;
+
+    const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}${categoryEndpoint}${difficultyEndpoint}${typeEndpoint}`;
+    return endpoint;
+  }
+  
+  fetchQuestions = async () => {
+    const token = getToken();
+    const endpoint = this.handleEndpoint(token);
+    const response = await fetch(endpoint);
+    const data = await response.json();
+
+    this.handleTokenValidation(data);
+
+    this.setState(() => ({ questionData: data.results }),
+      () => this.setSortedAnswers());
+  }
+
+  handleTokenValidation = ({ response_code: response }) => {
+    const errorCode = 3;
+    if (response === errorCode) { this.handleInvalidToken(); }
+  }
+  
+  handleInvalidToken = () => {
+    const { history: { push } } = this.props;
+    localStorage.removeItem('token');
+    push('/');
+  }
+  
+  // data structure handling functions
   handleMultipleQuestion = () => {
     const { questionData, currentQuestion } = this.state;
+
     const correctAnswer = questionData[currentQuestion].correct_answer;
     const incorrectAnswers = questionData[currentQuestion].incorrect_answers;
     const allAnswers = [correctAnswer, ...incorrectAnswers];
+
     const breakpoint = 0.5;
     const sortedAnswers = allAnswers.sort(() => Math.random() - breakpoint);
+
     this.setState({ answers: sortedAnswers, isLoading: false });
   }
 
   handleBooleanQuestion = () => {
     const { questionData, currentQuestion } = this.state;
-    console.log('entrei');
+
     const correctAnswer = questionData[currentQuestion].correct_answer;
     const incorrectAnswer = questionData[currentQuestion].incorrect_answers[0];
+
     const booleanOptions = correctAnswer === 'True'
       ? [correctAnswer, incorrectAnswer]
       : [incorrectAnswer, correctAnswer];
+
     this.setState({ answers: booleanOptions, isLoading: false });
   }
 
@@ -75,36 +129,36 @@ class Game extends Component {
       : this.handleBooleanQuestion();
   }
 
-  handleEndpoint = (token) => {
-    const { category, difficulty, type } = this.props;
-    const categoryEndpoint = category === 'any' ? '' : `&category=${category}`;
-    const difficultyEndpoint = difficulty === 'any' ? '' : `&difficulty=${difficulty}`;
-    const typeEndpoint = type === 'any' ? '' : `&type=${type}`;
-    const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}${categoryEndpoint}${difficultyEndpoint}${typeEndpoint}`;
-    return endpoint;
-  }
+  // render related functions
+  renderAnswers = () => {
+    const { questionData, isAnswered, currentQuestion, answers } = this.state;
 
-  fetchQuestions = async () => {
-    const token = getToken();
-    const endpoint = this.handleEndpoint(token);
-    const response = await fetch(endpoint);
-    const data = await response.json();
+    const answerButtons = answers.map((answerButton) => {
+      const correctAnswer = questionData[currentQuestion].correct_answer;
+      const isAnswerCorrect = correctAnswer === answerButton;
+      const className = isAnswerCorrect ? 'correct-answer' : 'wrong-answer';
 
-    this.handleTokenValidation(data);
+      return (
+        <Button
+          dataTestId={ isAnswerCorrect ? 'correct-answer' : 'wrong-answer' }
+          key={ isAnswerCorrect ? 'correctkey' : answerButton }
+          className={ isAnswered ? className : null }
+          onClick={ () => (
+            isAnswerCorrect
+              ? this.onCorrectAnswerClick()
+              : this.onWrongAnswerClick()
+          ) }
+          disabled={ isAnswered }
+        >
+          { answerButton }
+        </Button>
+      );
+    });
 
-    this.setState(() => ({ questionData: data.results }),
-      () => this.setSortedAnswers());
-  };
-
-  handleInvalidToken = () => {
-    const { history: { push } } = this.props;
-    localStorage.removeItem('token');
-    push('/');
-  };
-
-  handleTokenValidation = ({ response_code: response }) => {
-    const errorCode = 3;
-    if (response === errorCode) { this.handleInvalidToken(); }
+    const sectionElement = (
+      <section data-testid="answer-options">{ answerButtons }</section>
+    );
+    return sectionElement;
   }
 
   onWrongAnswerClick = () => {
@@ -151,49 +205,6 @@ class Game extends Component {
 
     this.setTimer();
     nextClick();
-  }
-
-  setTimer = () => {
-    this.setState({ timer: 30 });
-
-    this.timer = setInterval(() => {
-      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
-    }, second);
-
-    this.timeout = setTimeout(() => {
-      clearInterval(this.timer); this.setState({ isAnswered: true });
-    }, timeout);
-  }
-
-  renderAnswers = () => {
-    const { questionData, isAnswered, currentQuestion, answers } = this.state;
-
-    const answerButtons = answers.map((answerButton) => {
-      const correctAnswer = questionData[currentQuestion].correct_answer;
-      const isAnswerCorrect = correctAnswer === answerButton;
-      const className = isAnswerCorrect ? 'correct-answer' : 'wrong-answer';
-
-      return (
-        <Button
-          dataTestId={ isAnswerCorrect ? 'correct-answer' : 'wrong-answer' }
-          key={ isAnswerCorrect ? 'correctkey' : answerButton }
-          className={ isAnswered ? className : null }
-          onClick={ () => (
-            isAnswerCorrect
-              ? this.onCorrectAnswerClick()
-              : this.onWrongAnswerClick()
-          ) }
-          disabled={ isAnswered }
-        >
-          { answerButton }
-        </Button>
-      );
-    });
-
-    const sectionElement = (
-      <section data-testid="answer-options">{ answerButtons }</section>
-    );
-    return sectionElement;
   }
 
   render() {
