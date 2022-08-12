@@ -1,4 +1,5 @@
 import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE, ON_ANSWER,
+  PLAY_AGAIN,
   USER_LOGIN } from './actiontypes';
 
 export const userLoginAction = (payload) => ({
@@ -9,6 +10,10 @@ export const userLoginAction = (payload) => ({
 export const onAnswerAction = (payload) => ({
   type: ON_ANSWER,
   payload,
+});
+
+export const playAgainAction = () => ({
+  type: PLAY_AGAIN,
 });
 
 export const changeCategoryAction = (payload) => ({

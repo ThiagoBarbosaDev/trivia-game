@@ -22,7 +22,9 @@ class Feedback extends Component {
   };
 
   render() {
-    const { assertions, score } = this.props;
+    const { assertions, score, isLoggedIn } = this.props;
+
+    if (!isLoggedIn) { return <Redirect to='/'/>}
     return (
       <div>
         <Header />
@@ -61,15 +63,17 @@ class Feedback extends Component {
   }
 }
 
-const mapStateToProps = ({ player: { assertions, score } }) => ({
+const mapStateToProps = ({ player: { assertions, score, isLoggedIn } }) => ({
   assertions,
   score,
+  isLoggedIn,
 });
 
 Feedback.propTypes = {
   score: PropTypes.number.isRequired,
   assertions: PropTypes.number.isRequired,
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, null)(Feedback);

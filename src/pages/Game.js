@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import { getToken } from '../helpers';
@@ -206,9 +207,16 @@ class Game extends Component {
     nextClick();
   }
 
+  handleAuthentication = () => {
+
+  }
+
   render() {
     const { questionData, isAnswered, currentQuestion, timer,
       isLoading } = this.state;
+    const { isLoggedIn } = this.props;
+
+    if (!isLoggedIn) { return <Redirect to='/'/>}
 
     if (isLoading) { return <div>loading...</div>; }
     const { question, category } = questionData[currentQuestion];
@@ -242,7 +250,7 @@ class Game extends Component {
 
 const mapStateToProps = (
   {
-    player: { score },
+    player: { score, isLoggedIn },
     settingsReducer: { category, type, difficulty },
   },
 ) => ({
@@ -250,6 +258,7 @@ const mapStateToProps = (
   category,
   type,
   difficulty,
+  isLoggedIn,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -260,9 +269,13 @@ Game.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   score: PropTypes.number.isRequired,
   onAnswer: PropTypes.func.isRequired,
-  category: PropTypes.string.isRequired,
+  category: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   type: PropTypes.string.isRequired,
   difficulty: PropTypes.string.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

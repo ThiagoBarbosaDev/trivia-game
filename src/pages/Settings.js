@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ComboBox from '../components/ComboBox';
 import { changeCategoryAction, changeDifficultyAction,
-  changeTypeAction } from '../redux/actions';
+  changeTypeAction, 
+  playAgainAction} from '../redux/actions';
+import Button from '../components/Button';
 
 const DIFFICULTY_OPTIONS = ['Any Difficulty', 'Easy', 'Medium', 'Hard'];
 const TYPE_OPTIONS = ['Any Type', 'Multiple Choice', 'True / False'];
@@ -63,12 +65,23 @@ class Settings extends Component {
     this.setState({ [name]: value });
   }
 
+  handlePlayAgain = () => {
+    const { history: { push }, dispatchPlayAgain } = this.props;
+    console.log(dispatchPlayAgain);
+    dispatchPlayAgain();
+    push('/game');
+  }
+
   render() {
     const { isLoading, categories, selectedCategory, selectedType,
       selectedDifficulty } = this.state;
+    const { isLoggedIn } = this.props;
+
     const categoryOptions = ['Any Category', ...categories
       .map((category) => category.name)];
+
     if (isLoading) { return <div>Loading...</div>; }
+
     return (
       <div>
         <header data-testid="settings-title">
@@ -92,6 +105,7 @@ class Settings extends Component {
             onChange={ (event) => this.handleInput(event) }
           />
           <Link to="/"> Login </Link>
+          { isLoggedIn && <Button onClick={ () => this.handlePlayAgain() } > Play Again </Button> }
         </header>
       </div>
     );
@@ -102,12 +116,19 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchCategory: (payload) => dispatch(changeCategoryAction(payload)),
   dispatchDifficulty: (payload) => dispatch(changeDifficultyAction(payload)),
   dispatchType: (payload) => dispatch(changeTypeAction(payload)),
+  dispatchPlayAgain: () => dispatch(playAgainAction()),
+});
+
+const mapStateToProps = ({ player: { isLoggedIn } }) => ({
+  isLoggedIn,
 });
 
 Settings.propTypes = {
   dispatchCategory: PropTypes.func.isRequired,
   dispatchDifficulty: PropTypes.func.isRequired,
   dispatchType: PropTypes.func.isRequired,
+  dispatchPlayAgain: PropTypes.func.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
-export default connect(null, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

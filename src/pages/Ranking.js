@@ -17,15 +17,15 @@ class Ranking extends Component {
     this.handleStorage();
   }
 
-handleHomeClick = () => {
-  const { history: { push } } = this.props;
-  push('/');
-}
+  handleHomeClick = () => {
+    const { history: { push } } = this.props;
+    push('/');
+  }
 
 handleStorage = () => {
-  const { userName, score, gravatarEmail } = this.props;
+  const { name, score, gravatarEmail } = this.props;
   const gravatarHash = md5(gravatarEmail).toString();
-  const payload = { name: userName, score, picture: `https://www.gravatar.com/avatar/${gravatarHash}` };
+  const payload = { name: name, score, picture: `https://www.gravatar.com/avatar/${gravatarHash}` };
   const rankingData = updateRanking(payload);
   this.setState({
     ranking: rankingData,
@@ -56,6 +56,8 @@ renderRanking = () => {
 }
 
 render() {
+  if (!isLoggedIn) { return <Redirect to='/'/>}
+
   return (
     <div>
       <main>
@@ -66,7 +68,7 @@ render() {
           dataTestId="btn-go-home"
           onClick={ () => this.handleHomeClick() }
         >
-          Home
+          Logout
         </Button>
         {this.renderRanking()}
       </main>
@@ -75,19 +77,21 @@ render() {
 }
 }
 
-const mapStateToProps = (state) => ({
-  userName: state.player.name,
-  score: state.player.score,
-  gravatarEmail: state.player.gravatarEmail,
+const mapStateToProps = ({ player: { name, score, gravatarEmail, isLoggedIn } }) => ({
+  name,
+  score,
+  gravatarEmail,
+  isLoggedIn,
 });
 
 Ranking.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  userName: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   gravatarEmail: PropTypes.string.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps)(Ranking);
