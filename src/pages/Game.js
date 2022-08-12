@@ -62,24 +62,24 @@ class Game extends Component {
     const correctAnswer = questionData[currentQuestion].correct_answer;
     const incorrectAnswer = questionData[currentQuestion].incorrect_answers[0];
     const booleanOptions = correctAnswer === 'True'
-    ? [correctAnswer, incorrectAnswer]
-    : [incorrectAnswer, correctAnswer];
+      ? [correctAnswer, incorrectAnswer]
+      : [incorrectAnswer, correctAnswer];
     this.setState({ answers: booleanOptions, isLoading: false });
   }
 
   setSortedAnswers = () => {
     const { questionData, currentQuestion } = this.state;
 
-    questionData[currentQuestion].type === 'multiple' 
-      ? this.handleMultipleQuestion() 
+    questionData[currentQuestion].type === 'multiple'
+      ? this.handleMultipleQuestion()
       : this.handleBooleanQuestion();
   }
 
   handleEndpoint = (token) => {
     const { category, difficulty, type } = this.props;
-    const categoryEndpoint = category === 'any' ? '' : `&category=${category}` 
-    const difficultyEndpoint = difficulty === 'any' ? '' : `&difficulty=${difficulty}` 
-    const typeEndpoint = type === 'any' ? '' : `&type=${type}` 
+    const categoryEndpoint = category === 'any' ? '' : `&category=${category}`;
+    const difficultyEndpoint = difficulty === 'any' ? '' : `&difficulty=${difficulty}`;
+    const typeEndpoint = type === 'any' ? '' : `&type=${type}`;
     const endpoint = `https://opentdb.com/api.php?amount=5&token=${token}${categoryEndpoint}${difficultyEndpoint}${typeEndpoint}`;
     return endpoint;
   }
@@ -195,11 +195,11 @@ class Game extends Component {
     );
     return sectionElement;
   }
-  
+
   render() {
     const { questionData, isAnswered, currentQuestion, timer, isLoading } = this.state;
     if (isLoading) { return <div>loading...</div>; }
-    const question = questionData[currentQuestion].question
+    const { question } = questionData[currentQuestion];
     const parsedQuestion = unescapeHtml(question);
     return (
       <div>
@@ -227,7 +227,7 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ( { player: { score }, settingsReducer: { category, type, difficulty } } ) => ({
+const mapStateToProps = ({ player: { score }, settingsReducer: { category, type, difficulty } }) => ({
   score,
   category,
   type,

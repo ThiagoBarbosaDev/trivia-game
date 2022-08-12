@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ComboBox from '../components/ComboBox';
-import { changeCategoryAction, changeDifficultyAction, 
+import { changeCategoryAction, changeDifficultyAction,
   changeTypeAction } from '../redux/actions';
 
 const DIFFICULTY_OPTIONS = ['Any Difficulty', 'Easy', 'Medium', 'Hard'];
@@ -36,14 +36,16 @@ class Settings extends Component {
     const { dispatchCategory, dispatchDifficulty, dispatchType } = this.props;
     const { categories } = this.state;
 
-    if (name === 'selectedCategory') { 
+    if (name === 'selectedCategory') {
       const categoryId = categories.find((category) => category.name === value).id;
       dispatchCategory(categoryId);
-    };
-    if (name === 'selectedDifficulty') { dispatchDifficulty(value.toLowerCase()) };
-    if (name === 'selectedType') { value === 'True / False'
+    }
+    if (name === 'selectedDifficulty') { dispatchDifficulty(value.toLowerCase()); }
+    if (name === 'selectedType') {
+      value === 'True / False'
       ? dispatchType('boolean')
-      : dispatchType('multiple') }
+      : dispatchType('multiple')
+    }
   }
 
   handleInput = ({ target: { value, name } }) => {
@@ -56,7 +58,7 @@ class Settings extends Component {
       selectedDifficulty } = this.state;
     const categoryOptions = ['Any Category', ...categories
       .map((category) => category.name)];
-    if (isLoading) { return <div>Loading...</div> };
+    if (isLoading) { return <div>Loading...</div>; }
     return (
       <div>
         <header data-testid="settings-title">
