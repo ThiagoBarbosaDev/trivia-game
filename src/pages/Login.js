@@ -31,7 +31,7 @@ class Login extends Component {
     const { token } = await response.json();
     saveTokenToLocalStorage('token', token);
     dispatchLogin({ name, gravatarEmail });
-    push('/game');
+    push('/settings');
   };
 
   handleInput = ({ target: { value, name } }) => this.setState({ [name]: value });
@@ -62,12 +62,6 @@ class Login extends Component {
             onClick={ () => this.handleLoginClick() }
           >
             Play
-          </Button>
-          <Button
-            dataTestId="btn-settings"
-            onClick={ () => this.handleSettingsClick() }
-          >
-            Settings
           </Button>
         </header>
       </div>

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 
 class Feedback extends Component {
@@ -42,21 +42,10 @@ class Feedback extends Component {
           {' pontos'}
         </p>
         <Link
-          to="/game"
-          data-testid="btn-play-again"
-        >
-          Play Again
-        </Link>
-        <Link
           to="/ranking"
           data-testid="btn-ranking"
         >
           Ranking
-        </Link>
-        <Link
-          to="/settings"
-        >
-          Settings
         </Link>
       </div>
     );

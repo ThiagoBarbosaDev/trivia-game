@@ -7,6 +7,7 @@ import { changeCategoryAction, changeDifficultyAction,
   changeTypeAction, 
   playAgainAction} from '../redux/actions';
 import Button from '../components/Button';
+import { Redirect } from 'react-router-dom';
 
 const DIFFICULTY_OPTIONS = ['Any Difficulty', 'Easy', 'Medium', 'Hard'];
 const TYPE_OPTIONS = ['Any Type', 'Multiple Choice', 'True / False'];
@@ -24,7 +25,8 @@ class Settings extends Component {
   }
 
   componentDidMount() {
-    this.fetchCategories();
+    const { isLoggedIn } = this.props;
+    if (isLoggedIn) { this.fetchCategories(); }
   }
 
   fetchCategories = async () => {
@@ -65,9 +67,8 @@ class Settings extends Component {
     this.setState({ [name]: value });
   }
 
-  handlePlayAgain = () => {
+  handlePlay = () => {
     const { history: { push }, dispatchPlayAgain } = this.props;
-    console.log(dispatchPlayAgain);
     dispatchPlayAgain();
     push('/game');
   }
@@ -79,6 +80,8 @@ class Settings extends Component {
 
     const categoryOptions = ['Any Category', ...categories
       .map((category) => category.name)];
+
+    if (!isLoggedIn) { return <Redirect to='/'/>}
 
     if (isLoading) { return <div>Loading...</div>; }
 
@@ -104,8 +107,8 @@ class Settings extends Component {
             name="selectedType"
             onChange={ (event) => this.handleInput(event) }
           />
-          <Link to="/"> Login </Link>
-          { isLoggedIn && <Button onClick={ () => this.handlePlayAgain() } > Play Again </Button> }
+          <Link to="/"> Logout </Link>
+          <Button onClick={ () => this.handlePlay() } > Play </Button>
         </header>
       </div>
     );

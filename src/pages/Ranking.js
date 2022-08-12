@@ -2,6 +2,8 @@ import md5 from 'crypto-js/md5';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import Button from '../components/Button';
 import { updateRanking } from '../helpers/index';
 
@@ -55,26 +57,35 @@ renderRanking = () => {
   return <ul>{rankingElements}</ul>;
 }
 
-render() {
-  if (!isLoggedIn) { return <Redirect to='/'/>}
+  render() {
+    const { isLoggedIn } = this.props;
+    if (!isLoggedIn) { return <Redirect to='/'/>}
 
-  return (
-    <div>
-      <main>
-        <h2 data-testid="ranking-title">
-          Ranking
-        </h2>
-        <Button
-          dataTestId="btn-go-home"
-          onClick={ () => this.handleHomeClick() }
-        >
-          Logout
-        </Button>
-        {this.renderRanking()}
-      </main>
-    </div>
-  );
-}
+    return (
+      <div>
+        <main>
+          <h2 data-testid="ranking-title">
+            Ranking
+          </h2>
+          {this.renderRanking()}
+          <footer>
+            <Button
+              dataTestId="btn-go-home"
+              onClick={ () => this.handleHomeClick() }
+            >
+              Logout
+            </Button>
+            <Link
+              to="/settings"
+              data-testid="btn-play-again"
+            >
+              Play Again
+            </Link>
+          </footer>
+        </main>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = ({ player: { name, score, gravatarEmail, isLoggedIn } }) => ({

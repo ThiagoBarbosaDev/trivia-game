@@ -34,8 +34,11 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    this.fetchQuestions();
-    this.setTimer();
+    const { isLoggedIn } = this.props;
+    if (isLoggedIn) {
+      this.fetchQuestions();
+      this.setTimer();
+    }
   }
 
   componentWillUnmount() {
