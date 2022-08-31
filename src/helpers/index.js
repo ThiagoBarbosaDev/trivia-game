@@ -17,13 +17,13 @@ export const updateRanking = (payload) => {
   return updatedRanking;
 };
 
-export const saveTokenToLocalStorage = (key, payload) => localStorage.setItem(key, payload);
+export const saveTokenToLocalStorage = (key, payload) => localStorage
+  .setItem(key, payload);
 
 export const getToken = () => {
   const data = localStorage.getItem('token');
   return data;
 };
 
-export const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+export const capitalizeFirstLetter = (string) => string
+  .charAt(0).toUpperCase() + string.slice(2);
