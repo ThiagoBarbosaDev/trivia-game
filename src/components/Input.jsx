@@ -6,20 +6,17 @@ class Input extends React.Component {
     const { dataTestId, placeholder, className,
       children, type, name, value, checked, ...otherProps } = this.props;
     return (
-      <label htmlFor={ `input-${name}` }>
-        { children }
-        <input
-          data-testid={ dataTestId }
-          name={ name }
-          id={ `input-${name}` }
-          type={ type }
-          value={ value }
-          checked={ checked }
-          placeholder={ placeholder }
-          className={ className }
-          { ...otherProps }
-        />
-      </label>
+      <input
+        data-testid={ dataTestId }
+        name={ name }
+        id={ `input-${name}` }
+        type={ type }
+        value={ value }
+        checked={ checked }
+        placeholder={ placeholder }
+        className={ className }
+        { ...otherProps }
+      />
     );
   }
 }

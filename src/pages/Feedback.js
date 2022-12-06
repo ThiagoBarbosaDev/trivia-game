@@ -24,7 +24,7 @@ class Feedback extends Component {
   render() {
     const { assertions, score, isLoggedIn } = this.props;
 
-    if (!isLoggedIn) { return <Redirect to='/'/>}
+    if (!isLoggedIn) { return <Redirect to="/" />; }
     return (
       <div>
         <Header />

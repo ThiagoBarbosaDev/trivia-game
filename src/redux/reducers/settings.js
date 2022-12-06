@@ -1,4 +1,5 @@
-import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE, USER_LOGOUT } from '../actions/actiontypes';
+import { CHANGE_CATEGORY, CHANGE_DIFFICULTY, CHANGE_TYPE,
+  USER_LOGOUT } from '../actions/actiontypes';
 
 const INITIAL_STATE = {
   type: 'any',

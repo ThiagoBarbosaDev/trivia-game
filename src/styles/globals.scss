@@ -1,0 +1,15 @@
+/* resetter */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+// button, input {
+//   all: unset;
+//   text-align: center;
+// }
+
+button:hover {
+  cursor: pointer;
+}

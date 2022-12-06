@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400&display=swap');
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin heading {
+  font-family: Pacifico, Arial, Helvetica, sans-serif;
+  font-size: 3rem;
+}
+
+@mixin sub-heading {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-size: 2rem;
+  font-weight: 300;
+}

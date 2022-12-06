@@ -26,4 +26,4 @@ export const getToken = () => {
 };
 
 export const capitalizeFirstLetter = (string) => string
-  .charAt(0).toUpperCase() + string.slice(2);
+  .charAt(0).toUpperCase() + string.slice(1);

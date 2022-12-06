@@ -1,0 +1,55 @@
+@use '../../styles/variables.scss';
+@use '../../styles/mixins.scss';
+
+.background {
+  height: 100vh;
+  background-image: variables.$gradiente;
+  @include mixins.flex-column;
+}
+
+.container {
+  @include mixins.flex-column;
+  background-color: variables.$branco;
+  height: 60vh;
+  min-width: 40vw;
+  padding: 75px;
+  margin: 25px;
+  border-radius: 75px;
+  justify-content: space-between;
+  box-shadow: 0px 0px 22px 16px rgba(255, 255, 255, 1);
+
+  .combobox-container {
+    @include mixins.flex-column;    
+    gap: 1.5rem;
+    width: 95%;
+    .select {
+      text-align: center;
+    }
+  }
+
+  .heading {
+    @include mixins.heading;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    width: 95%;
+
+    .button {
+      width: 50%;
+    }
+
+    .logout-button {
+      background-color: variables.$marrom-claro;
+      border: 1px solid white;
+      color: black;
+    }
+
+    .play-button {
+      background-color: variables.$marrom-escuro;
+      border: 1px solid white;
+      color: black;
+    }
+  }
+}

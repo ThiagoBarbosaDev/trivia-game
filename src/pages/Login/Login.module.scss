@@ -1,0 +1,64 @@
+@use '../../styles/mixins.scss';
+@use '../../styles/variables.scss';
+
+.container {
+  height: 100vh;
+  @include mixins.flex-column;
+  background-image: variables.$gradiente;
+  background-image: url(../../assets/wintery-sunburst.svg);
+  background-size: cover;
+  background-position: center;
+}
+
+.header-container {
+  @include mixins.flex-column;
+  position: absolute;
+  background-color: variables.$branco;
+  background-image: variables.$pattern;
+  min-width: 30%;
+  min-height: 50%;
+  padding: 5%;
+  border-radius: 50%;
+  gap: 3.5rem;
+  box-shadow: -1px 0px 22px 6px rgba(255, 255, 255, 0.7);
+}
+
+.logo {
+  height: 100px;
+}
+
+.play-button {
+  width: 100%;
+  background-color: variables.$highlight;
+  border: 1px solid variables.$marrom-claro;
+}
+
+.play-button:disabled {
+  width: 100%;
+  background-color: variables.$marrom-escuro;
+  border: 1px solid variables.$marrom-claro;
+}
+
+.play-button:hover {
+  background-color: variables.$marrom-escuro;
+  color: black;
+  border: 1px solid variables.$marrom-claro;
+}
+
+.input-wrapper {
+  @include mixins.flex-column;
+  text-align: center;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.input {
+  text-align: center;
+  width: 100%;
+  min-width: 18rem;
+}
+
+.input::placeholder {
+  text-align: center;
+}

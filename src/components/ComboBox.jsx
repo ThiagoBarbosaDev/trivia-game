@@ -31,7 +31,7 @@ ComboBox.propTypes = {
 };
 
 ComboBox.defaultProps = {
-  className: null,
+  className: '',
   dataTestId: null,
 };
 

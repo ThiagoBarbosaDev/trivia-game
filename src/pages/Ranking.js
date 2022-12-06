@@ -2,8 +2,7 @@ import md5 from 'crypto-js/md5';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Button from '../components/Button';
 import { updateRanking } from '../helpers/index';
 import { userLogoutAction } from '../redux/actions';
@@ -21,14 +20,15 @@ class Ranking extends Component {
   }
 
   handleHomeClick = () => {
-    const { history: { push } } = this.props;
+    const { history: { push }, dispatchLogout } = this.props;
+    dispatchLogout();
     push('/');
   }
 
   handleStorage = () => {
     const { name, score, gravatarEmail } = this.props;
     const gravatarHash = md5(gravatarEmail).toString();
-    const payload = { name: name, score, picture: `https://www.gravatar.com/avatar/${gravatarHash}` };
+    const payload = { name, score, picture: `https://www.gravatar.com/avatar/${gravatarHash}` };
     const rankingData = updateRanking(payload);
     this.setState({
       ranking: rankingData,
@@ -58,10 +58,10 @@ class Ranking extends Component {
     return <ul>{rankingElements}</ul>;
   }
 
-// todo: lógica de logout
+  // todo: lógica de logout
   render() {
     const { isLoggedIn } = this.props;
-    if (!isLoggedIn) { return <Redirect to='/'/>}
+    if (!isLoggedIn) { return <Redirect to="/" />; }
 
     return (
       <div>
@@ -98,7 +98,7 @@ const mapStateToProps = ({ player: { name, score, gravatarEmail, isLoggedIn } })
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchLogout: () => dispatch(userLogoutAction())
+  dispatchLogout: () => dispatch(userLogoutAction()),
 });
 
 Ranking.propTypes = {
@@ -111,6 +111,5 @@ Ranking.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   dispatchLogout: PropTypes.func.isRequired,
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ranking);
